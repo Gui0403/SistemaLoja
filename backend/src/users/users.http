@@ -1,0 +1,30 @@
+### Create Users
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+    "name": "Pablo",
+    "email": "pablo@gmail.com",
+    "dateOfBirth": "2006-03-04"
+}
+
+### Update
+PATCH  http://localhost:3000/users/user_SKVc7AQuMKH68c_EYkMqd
+Content-Type: application/json
+
+{
+    "name": "Guilherme",
+    "email": "pablo@gmail.com",
+    "dateOfBirth": "2006-03-04"
+}
+
+### Read List Users
+GET http://localhost:3000/users
+
+
+### Read 1 User
+GET http://localhost:3000/users/user_SKVc7AQuMKH68c_EYkMqd
+
+
+### Delete
+DELETE http://localhost:3000/users/user_VJGrUKqgoz9hNYKjca83C
