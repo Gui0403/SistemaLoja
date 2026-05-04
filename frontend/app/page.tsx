@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import { Produto } from "@/types/produto";
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 import { StatCard } from './components/StatCard';
@@ -126,7 +127,7 @@ export default function DashboardPage() {
                     </button>
                   }
                 >
-                  {(data?.vendasRecentes || []).map((prod) => (
+                  (data?.produtosRecentes || []).map((prod: Produto) => (
                     <tr key={prod.id}>...</tr>
                   ))}
                 </DataTable>
