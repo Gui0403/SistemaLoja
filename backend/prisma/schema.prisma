@@ -1,0 +1,180 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum StatusVendaEnum {
+  PENDENTE
+  PROCESSANDO
+  ENVIADA
+  ENTREGUE
+  CANCELADA
+}
+
+enum FormaPagamentoEnum {
+  DINHEIRO
+  CARTAO_CREDITO
+  CARTAO_DEBITO
+  PIX
+  BOLETO
+  TRANSFERENCIA
+}
+
+enum StatusFaturaEnum {
+  EMITIDA
+  PAGA
+  CANCELADA
+  DEVOLVIDA
+}
+
+// ============================================
+// MODELS
+// ============================================
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  vendas Venda[]
+
+  @@map("users")
+}
+
+model Categoria {
+  id           String    @id @default(cuid())
+  nome         String    @unique
+  descricao    String?
+  criadoEm     DateTime  @default(now())
+  atualizadoEm DateTime  @updatedAt
+
+  // Relations
+  produtos Produto[]
+
+  @@index([nome])
+  @@map("categorias")
+}
+
+model Produto {
+  id              String    @id @default(cuid())
+  nome            String
+  skuCode         String    @unique
+  categoriaId     String
+  precoCusto      Decimal   @db.Decimal(10, 2)
+  precoVenda      Decimal   @db.Decimal(10, 2)
+  estoqueAtual    Int       @default(0)
+  estoqueMínimo   Int       @default(10)
+  itensVendidos   Int       @default(0)
+  criadoEm        DateTime  @default(now())
+  atualizadoEm    DateTime  @updatedAt
+
+  // Relations
+  categoria  Categoria  @relation(fields: [categoriaId], references: [id], onDelete: Restrict)
+  itensVenda ItemVenda[]
+
+  // Índices
+  @@index([skuCode])
+  @@index([categoriaId])
+  @@map("produtos")
+}
+
+model Cliente {
+  id           String    @id @default(cuid())
+  nome         String
+  email        String?
+  telefone     String?
+  cpfCnpj      String?   @unique
+  endereco     String?
+  criadoEm     DateTime  @default(now())
+  atualizadoEm DateTime  @updatedAt
+
+  // Relations
+  vendas Venda[]
+
+  // Índices
+  @@index([cpfCnpj])
+  @@index([email])
+  @@map("clientes")
+}
+
+model Venda {
+  id               String             @id @default(cuid())
+  numeroVenda      String             @unique
+  clienteId        String
+  usuarioId        String?
+  subtotal         Decimal            @db.Decimal(10, 2)
+  desconto         Decimal            @default(0) @db.Decimal(10, 2)
+  total            Decimal            @db.Decimal(10, 2)
+  status           StatusVendaEnum    @default(PENDENTE)
+  formaPagamento   FormaPagamentoEnum?
+  dataVenda        DateTime           @default(now())
+  dataEntrega      DateTime?
+  observacoes      String?
+  criadoEm         DateTime           @default(now())
+  atualizadoEm     DateTime           @updatedAt
+
+  // Relations
+  cliente     Cliente     @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  usuario     User?       @relation(fields: [usuarioId], references: [id], onDelete: SetNull)
+  itens       ItemVenda[]
+  fatura      Fatura?
+
+  // Índices
+  @@index([clienteId])
+  @@index([usuarioId])
+  @@index([numeroVenda])
+  @@index([status])
+  @@map("vendas")
+}
+
+model ItemVenda {
+  id            String    @id @default(cuid())
+  vendaId       String
+  produtoId     String
+  quantidade    Int
+  precoUnitario Decimal   @db.Decimal(10, 2)
+  criadoEm      DateTime  @default(now())
+
+  // Relations
+  venda   Venda   @relation(fields: [vendaId], references: [id], onDelete: Cascade)
+  produto Produto @relation(fields: [produtoId], references: [id], onDelete: Restrict)
+
+  // Índices
+  @@index([vendaId])
+  @@index([produtoId])
+  @@map("itens_venda")
+}
+
+model Fatura {
+  id            String            @id @default(cuid())
+  numeroFatura  String            @unique
+  vendaId       String            @unique
+  statusFatura  StatusFaturaEnum  @default(EMITIDA)
+  dataEmissao   DateTime          @default(now())
+  dataPagamento DateTime?
+  criadoEm      DateTime          @default(now())
+  atualizadoEm  DateTime          @updatedAt
+
+  // Relations
+  venda Venda @relation(fields: [vendaId], references: [id], onDelete: Cascade)
+
+  // Índices
+  @@index([vendaId])
+  @@index([numeroFatura])
+  @@map("faturas")
+}
