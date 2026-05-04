@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Produto } from "./types/produto";
+import type { Produto } from "./types/produto";
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 import { StatCard } from './components/StatCard';
