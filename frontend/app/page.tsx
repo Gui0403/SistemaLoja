@@ -110,9 +110,12 @@ export default function DashboardPage() {
                     </Link>
                   }
                 >
-                  {(data?.produtosRecentes || []).map((prod) => (
-                    <tr key={prod.id}>...</tr>
-                  ))}
+                  {(data?.produtosRecentes || []).map((prod: Produto) => (
+                  <tr key={prod.id}>
+                    <td>{prod.nome}</td>
+                    <td>{prod.preco}</td>
+                  </tr>
+                ))}
                 </DataTable>
               </div>
 
@@ -127,9 +130,12 @@ export default function DashboardPage() {
                     </button>
                   }
                 >
-                  (data?.produtosRecentes || []).map((prod: Produto) => (
-                    <tr key={prod.id}>...</tr>
-                  ))}
+                 {(data?.produtosRecentes || []).map((prod: Produto) => (
+                  <tr key={prod.id}>
+                    <td>{prod.nome}</td>
+                    <td>{prod.preco}</td>
+                  </tr>
+                ))}
                 </DataTable>
               </div>
             </div>
@@ -137,9 +143,12 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[350px] pb-8 mt-15">
               <div className="h-full">
                 <DataTable title="Estoque Baixo" headers={['Produto', 'Estoque', 'Mínimo']}>
-                  {(data?.estoqueBaixo || []).map((prod) => (
-                    <tr key={prod.id}>...</tr>
-                  ))}
+                 {(data?.produtosRecentes || []).map((prod: Produto) => (
+                  <tr key={prod.id}>
+                    <td>{prod.nome}</td>
+                    <td>{prod.preco}</td>
+                  </tr>
+                ))}
                 </DataTable>
               </div>
 
